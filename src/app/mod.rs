@@ -1806,6 +1806,7 @@ mod comment_vim;
 mod comments;
 mod commits;
 mod diff_load;
+mod editor_target;
 mod file_filter;
 mod gaps;
 mod init;

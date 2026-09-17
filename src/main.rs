@@ -778,7 +778,7 @@ fn main() -> anyhow::Result<()> {
                                 } else {
                                     ""
                                 };
-                                app.set_message(format!("Opened {}{hint}", target.path.display()));
+                                app.set_message(format!("Opened {}{hint}", target.label));
                             }
                             Ok(Ok(EditorOutcome::Finished)) => {
                                 if app.diff_source.includes_worktree_changes() {
@@ -791,7 +791,7 @@ fn main() -> anyhow::Result<()> {
                                             };
                                             app.set_message(format!(
                                                 "Opened {} and reloaded {count} files{invalidated_suffix}",
-                                                target.path.display()
+                                                target.label
                                             ));
                                         }
                                         Err(err) => {
@@ -801,7 +801,7 @@ fn main() -> anyhow::Result<()> {
                                         }
                                     }
                                 } else {
-                                    app.set_message(format!("Opened {}", target.path.display()));
+                                    app.set_message(format!("Opened {}", target.label));
                                 }
                             }
                             Ok(Err(err)) => app.set_error(err.to_string()),
