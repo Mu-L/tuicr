@@ -777,6 +777,7 @@ impl App {
 
         self.diff_files = diff_files;
         self.clear_expanded_gaps();
+        self.insert_commit_message_if_single();
 
         self.sort_files_by_directory(false);
         self.populate_file_line_count_cache();
@@ -1615,8 +1616,13 @@ fn file_fingerprint(file: &DiffFile) -> u64 {
 /// compares two lists as sets, which is required because the stored list is
 /// sorted by directory and a freshly fetched one is not (see
 /// `sort_files_by_directory`).
+/// Commit messages are synthetic and never returned by a VCS diff fetch.
 fn diff_files_fingerprint(files: &[DiffFile]) -> u64 {
-    let mut per_file: Vec<u64> = files.iter().map(file_fingerprint).collect();
+    let mut per_file: Vec<u64> = files
+        .iter()
+        .filter(|file| !file.is_commit_message)
+        .map(file_fingerprint)
+        .collect();
     per_file.sort_unstable();
     let mut hasher = crate::hash::Fnv1aHasher::new();
     for hash in per_file {
