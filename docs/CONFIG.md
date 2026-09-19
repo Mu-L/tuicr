@@ -25,7 +25,7 @@ theme_dark = "gruvbox-dark"
 theme_light = "gruvbox-light"
 
 diff_view = "side-by-side"
-ignore_whitespace = false
+ignore_whitespace = "auto" # or true / false; omitted defaults to false
 commit_order = "descending"
 initial_commit_selection = "all"
 show_file_list = true
@@ -63,6 +63,10 @@ comment_types = [
   { id = "nit", label = "nitpick", definition = "small optional tweaks", color = "#d19a66" },
 ]
 
+[ignore_whitespace_overrides] # only used with ignore_whitespace = "auto"
+rs = false                    # keep Rust whitespace changes
+custom = true                 # ignore whitespace in *.custom files
+
 [forge]
 comment_type_prefix = true
 
@@ -87,7 +91,8 @@ session_header = true
 | `diff_view`                | `unified`    | `unified` or `side-by-side`. Toggle in-app with `:diff`.                                                                                                   |
 | `commit_order`             | `descending` | Inline commit selector order: `descending` (newest on top, the default) or `ascending` (oldest on top).                                                    |
 | `initial_commit_selection` | `all`        | Which commits are selected when a multi-commit review first opens: `all`, or `oldest` to start on just the oldest commit and walk forward with `(` / `)`.  |
-| `ignore_whitespace`        | `false`      | Ignore all whitespace in local Git, jj, and hg diffs. PR diffs are unchanged.                                                                              |
+| `ignore_whitespace`        | `false`      | Whitespace comparison for local Git, jj, and hg diffs: `false` compares normally, `true` ignores all whitespace, and `"auto"` chooses by file extension. PR diffs are unchanged. See [Whitespace comparison](#whitespace-comparison). |
+| `ignore_whitespace_overrides` | (none)    | Table of extension-to-boolean overrides, used only with `ignore_whitespace = "auto"`. `true` ignores whitespace; `false` compares normally. |
 | `show_file_list`           | `true`       | Whether the file list panel is visible on startup. Toggle with `<leader>e`.                                                                                |
 | `compact_folders` | `false` | Join single-child directory chains into one file-tree row. Restart tuicr after changing this setting. |
 | `show_pr_checks`           | `false`      | Whether PR CI checks are fetched and shown. Set to `true` to include GitHub check rollups.                                                           |
@@ -115,6 +120,22 @@ session_header = true
 | `backend`                  | `libgit2`    | Git backend: `libgit2` or `cli`. Sparse-checkout repos auto-route to `cli`.                                                                                |
 | `comment_types`            | (none)       | Comment categories. Untyped by default. See [Comment types](#comment-types).                                                                               |
 | `export_legend`            | `true`       | Include the `Comment types:` legend in the exported review. Superseded by `legend` under [Export](#export).                                                |
+
+## Whitespace comparison
+
+`ignore_whitespace = "auto"` ignores whitespace in files with extensions
+`json`, `js`, `jsx`, `mjs`, `cjs`, `ts`, `tsx`, and `rs`. Unknown extensions,
+extensionless files, Python, and YAML compare normally unless overridden.
+
+Use `[ignore_whitespace_overrides]` to replace the decision for an extension.
+For example, `rs = false` keeps Rust whitespace changes and `custom = true`
+ignores whitespace in `*.custom` files. Values keep the same meaning regardless
+of the built-in defaults. Keys are case-insensitive extensions without a leading
+dot, path, or glob. The table is ignored with a warning outside auto mode.
+
+Auto mode is a review heuristic, not a guarantee of equivalent behavior:
+whitespace inside strings can still matter in the listed languages. These
+settings affect only local VCS diffs; pull-request diffs are unchanged.
 
 ## Themes
 
