@@ -1560,7 +1560,7 @@ fn should_update_current_file_when_navigating_to_remote_comment() {
 
     assert!(matches!(
         app.line_annotations.get(app.diff_state.cursor_line),
-        Some(AnnotatedLine::RemoteThreadLine { thread_idx: 0 })
+        Some(AnnotatedLine::RemoteThreadLine { thread_idx: 0, .. })
     ));
     assert_eq!(app.diff_state.current_file_idx, 1);
 
@@ -1607,7 +1607,7 @@ fn should_rebuild_single_file_annotations_when_navigating_to_outdated_remote_com
 
     assert!(matches!(
         app.line_annotations.get(app.diff_state.cursor_line),
-        Some(AnnotatedLine::RemoteThreadLine { thread_idx: 0 })
+        Some(AnnotatedLine::RemoteThreadLine { thread_idx: 0, .. })
     ));
     assert_eq!(app.diff_state.current_file_idx, 1);
     assert!(
